@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-export HOST_IP=`ipconfig getifaddr en1`
+EN0=`ipconfig getifaddr en0`
+EN1=`ipconfig getifaddr en1`
+nvl(){ echo $1; }
+export HOST_IP=$(nvl $EN0 $EN1)
 CONTAINER_NAME=`basename "$0"`
 CONTAINER_SEQ=$(echo $CONTAINER_NAME | sed s@[a-zA-Z]@@g)
 CONTAINER_ID=$(docker ps -f name=$CONTAINER_NAME --format "{{.ID}}")
@@ -15,5 +18,3 @@ else
 	docker stop $CONTAINER_NAME
 	docker stop zookeeper$CONTAINER_SEQ
 fi
-
-
