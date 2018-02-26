@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+EN0=`ipconfig getifaddr en0`
+EN1=`ipconfig getifaddr en1`
+nvl(){ echo $1; }
+export HOST_IP=$(nvl $EN0 $EN1)
+CONTAINER_IDS=$(docker ps -f name=kafka --format "{{.ID}}")
+
+echo $HOST_IP
+
+if [[ -z "$CONTAINER_IDS" ]]; then
+	echo starting $CONTAINER_NAME
+	docker-compose -f docker-compose-multiple-brokers.yaml up
+else
+	echo stoping
+	#docker-compose -f docker-compose-multiple-brokers.yaml config --services | grep kafka | sort -r
+	docker ps -f name=kafka --format "{{.ID}}" | xargs docker stop
+	docker stop zookeeper-multi
+fi
