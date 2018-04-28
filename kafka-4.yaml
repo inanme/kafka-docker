@@ -1,0 +1,24 @@
+version: '2.1'
+services:
+  kafka-4:
+    build: .
+    container_name: kafka-4
+    ports:
+      - "39092:9092"
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.6
+    environment:
+      KAFKA_BROKER_ID: 4
+      KAFKA_PORT: 9092
+      KAFKA_ADVERTISED_PORT: 39092
+      KAFKA_ADVERTISED_HOST_NAME: ${HOST_IP}
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-multi:2181
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.5.0.0/16
